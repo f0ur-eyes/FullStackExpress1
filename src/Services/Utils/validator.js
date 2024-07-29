@@ -28,14 +28,8 @@ const todoSchema = joi.object({
     title:joi.string().min(1).max(12).required(),
     description:joi.string().required()
 })
-// a schema for deleting todo based on title
-const titleSchema = joi.object({
-    // only needs a title
-    title:joi.string().min(1).max(12).required()
-})
 
 // export the necessary syntax
 module.exports = {
-    validateTodo: validator(todoSchema),
-    validateTitle: validator(titleSchema)
+    validateTodo: validator(todoSchema)
 }

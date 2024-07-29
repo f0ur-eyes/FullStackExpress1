@@ -1,16 +1,35 @@
-// a function that checks the index of a todo by matching a title
-function getIndex(list, title) {
-    // iterate throught the indexes of the list
-    for(i in list){
-        // if the index's title matches the given title
-        if(list[i].title===title){
-            // return the index
-            return i
-        }
+const db = require("better-sqlite3")("app.db")
+
+function getToDo(){
+    const query = "SELECT * FROM Todos"
+    const result = db.prepare(query).all();
+    return result;
+}
+
+function createTodo(todo){
+    const query = "INSERT INTO Todos(title, description) VALUES(?, ?)"
+    const result = db.prepare(query).run(todo.title, todo.description)
+    if(result.changes === 0){
+        throw new Error('An error occured when inserting a new product');
     }
-    // if no index has a matching title, return -1, a negative index to represent the fail
-    return -1
+}
+
+function updateTodo(todo, todoId){
+    const query = " UPDATE Todos SET title = ?, description = ? WHERE id = ? "
+    const result = db.prepare(query).run(todo.title, todo.description, todoId)
+    return result.changes == 1;
+}
+
+function deleteTodo(todoId){
+    const query = "DELETE FROM Todos WHERE id = ?"
+    const result = db.prepare(query).run(todoId);
+    return result.changes == 1;
 }
 
 // export the function to use it in Todo.js
-module.exports = getIndex
+module.exports = {
+    getToDo,
+    createTodo,
+    updateTodo,
+    deleteTodo
+}
